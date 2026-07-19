@@ -1,0 +1,49 @@
+name: Windows build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Static validation
+        shell: pwsh
+        run: python tools/static_validate.py
+
+      - name: Restore, build, test and publish
+        shell: pwsh
+        run: .\Validate-Project.ps1 -Publish -Strict
+
+      - name: Generate source hash list
+        shell: pwsh
+        run: |
+          Get-ChildItem -File -Recurse |
+            Where-Object { $_.FullName -notmatch '\\(bin|obj|dist)\\' } |
+            Get-FileHash -Algorithm SHA256 |
+            ForEach-Object { "$($_.Hash)  $($_.Path.Substring($pwd.Path.Length + 1))" } |
+            Set-Content SOURCE_SHA256SUMS.txt
+
+      - name: Upload validation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: NexusNetworkBinder-win-x64
+          path: |
+            dist/win-x64/NexusNetworkBinder.exe
+            validation-report.txt
+            STATIC_VALIDATION.txt
+            SOURCE_SHA256SUMS.txt
+          if-no-files-found: error

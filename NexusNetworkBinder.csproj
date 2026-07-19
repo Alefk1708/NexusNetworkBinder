@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>NexusNetworkBinder.ico</ApplicationIcon>
+    <AssemblyName>NexusNetworkBinder</AssemblyName>
+    <RootNamespace>NexusNetworkBinder</RootNamespace>
+    <Version>21.1.2</Version>
+    <AssemblyVersion>21.1.2.0</AssemblyVersion>
+    <FileVersion>21.1.2.0</FileVersion>
+    <InformationalVersion>21.1.2-installer-registry-fix</InformationalVersion>
+    <Deterministic>true</Deterministic>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="NexusNetworkBinder.ico" />
+    <Resource Include="NexusNetworkBinder.png" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,769 @@
+<Window x:Class="NexusNetworkBinder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nexus Network Binder v21.1"
+        Height="720" Width="1180" MinHeight="520" MinWidth="820"
+        WindowStartupLocation="CenterScreen"
+        Icon="pack://application:,,,/NexusNetworkBinder.ico"
+        Background="{DynamicResource AppBackgroundBrush}"
+        Closing="Window_Closing" SizeChanged="Window_SizeChanged"
+        FontFamily="Segoe UI Variable Text, Segoe UI, sans-serif"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Window.Resources>
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        </Style>
+        <Style x:Key="SectionDescriptionStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+        <Style x:Key="PillStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="9,4"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceElevatedBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="RootGrid" Background="{DynamicResource AppBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="NavColumn" Width="232" MinWidth="64"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- NAVEGAÇÃO -->
+        <Border Grid.Column="0"
+                Background="{DynamicResource SidebarBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="0,0,1,0">
+            <Grid Margin="12,18,12,14">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="2,0,2,22">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="44"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Width="42" Height="42" CornerRadius="13"
+                            Background="{DynamicResource SurfaceElevatedBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+                        <Image Source="pack://application:,,,/NexusNetworkBinder.png"
+                               Width="34" Height="34" Stretch="Uniform"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="11,1,0,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="TxtBrandName" Text="Nexus" FontSize="17" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock x:Name="TxtBrandSubtitle" Text="Network Control Center" FontSize="10.5"
+                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                    </StackPanel>
+                </Grid>
+
+                <Border Grid.Row="1" x:Name="BtnToggleNav" Style="{StaticResource NavItemStyle}"
+                        Margin="0,0,0,18" MouseLeftButtonDown="BtnToggleNav_Click">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="24"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="&#xE700;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                   FontSize="16" Foreground="{DynamicResource TextSecondaryBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" x:Name="TxtMenuToggle" Text="Recolher menu" Margin="12,0,0,0"
+                                   VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"
+                                   FontSize="12.5"/>
+                    </Grid>
+                </Border>
+
+                <StackPanel Grid.Row="2">
+                    <TextBlock x:Name="TxtNavSection" Text="CONTROLE" FontSize="9.5" FontWeight="Bold"
+                               Foreground="{DynamicResource TextMutedBrush}" Margin="12,0,0,10"/>
+
+                    <Border x:Name="MenuPrincipal" Style="{StaticResource NavItemStyle}"
+                            Background="{DynamicResource SelectedBrush}" MouseLeftButtonDown="Menu_Click">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="24"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE80F;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="17"
+                                       Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" x:Name="TxtMenuPrincipal" Text="Visão geral" Margin="12,0,0,0"
+                                       FontSize="13.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        </Grid>
+                    </Border>
+
+                    <Border x:Name="MenuJogos" Style="{StaticResource NavItemStyle}" MouseLeftButtonDown="Menu_Click">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="24"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE7FC;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="17"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" x:Name="TxtMenuJogos" Text="Aplicativos" Margin="12,0,0,0"
+                                       FontSize="13.5" FontWeight="Medium" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        </Grid>
+                    </Border>
+
+                    <Border x:Name="MenuInterfaces" Style="{StaticResource NavItemStyle}" MouseLeftButtonDown="Menu_Click">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="24"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE968;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="17"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" x:Name="TxtMenuInterfaces" Text="Conexões" Margin="12,0,0,0"
+                                       FontSize="13.5" FontWeight="Medium" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        </Grid>
+                    </Border>
+
+                    <Border x:Name="MenuRotas" Style="{StaticResource NavItemStyle}" MouseLeftButtonDown="Menu_Click">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="24"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE8AB;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="17"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" x:Name="TxtMenuRotas" Text="Destinos de rede" Margin="12,0,0,0"
+                                       FontSize="13.5" FontWeight="Medium" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        </Grid>
+                    </Border>
+
+                    <Border x:Name="MenuConfig" Style="{StaticResource NavItemStyle}" MouseLeftButtonDown="Menu_Click">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="24"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE713;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="17"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" x:Name="TxtMenuConfig" Text="Configurações" Margin="12,0,0,0"
+                                       FontSize="13.5" FontWeight="Medium" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+                <Border Grid.Row="3" Style="{StaticResource SubtleCardStyle}" Padding="12">
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <Ellipse Width="8" Height="8" Fill="{DynamicResource SuccessBrush}" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                            <TextBlock x:Name="NavFooterText" Text="Modo conservador" FontSize="11.5" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock x:Name="NavFooterVersion" Text="v21.1 • sem injeção" FontSize="9.5"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ÁREA PRINCIPAL -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="TopBarRow" Height="74"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="{DynamicResource TopBarBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1">
+                <Grid x:Name="TopBarLayout" Margin="20,11,20,10">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock x:Name="PageTitle" Text="Visão geral" FontSize="24" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock x:Name="PageSubtitle" Text="Controle suas conexões e acompanhe o estado do perfil ativo."
+                                   FontSize="11.5" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,3,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border x:Name="AdminPill" Style="{StaticResource PillStyle}" Margin="0,0,12,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="7" Height="7" Fill="{DynamicResource SuccessBrush}" Margin="0,0,7,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Administrador" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            </StackPanel>
+                        </Border>
+                        <Button x:Name="BtnThemeToggle" Style="{StaticResource SoftButtonStyle}" Width="42" Height="40" Padding="0"
+                                Click="BtnThemeToggle_Click" ToolTip="Alternar entre modo claro e escuro">
+                            <TextBlock x:Name="ThemeGlyph" Text="&#xE708;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                       FontSize="16"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1" x:Name="PageHost" Background="Transparent" Padding="18,16,18,18">
+                <TabControl x:Name="MainTabControl" Background="Transparent" BorderThickness="0">
+                    <TabControl.ItemContainerStyle>
+                        <Style TargetType="TabItem"><Setter Property="Visibility" Value="Collapsed"/></Style>
+                    </TabControl.ItemContainerStyle>
+
+                    <!-- 0 — VISÃO GERAL -->
+                    <TabItem>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly">
+                            <StackPanel>
+                                <Border x:Name="StatusCard" Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                                    <Grid x:Name="StatusLayoutGrid">
+                                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock x:Name="StatusLabel" Text="ESTADO DO PERFIL" FontSize="10" FontWeight="Bold"
+                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                            <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                                                <Ellipse x:Name="StatusDot" Width="12" Height="12" Fill="{DynamicResource TextMutedBrush}"
+                                                         VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                <TextBlock x:Name="StatusText" Text="INATIVO" FontSize="22" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                            </StackPanel>
+                                            <TextBlock Text="O Nexus aplica somente alterações registradas no diário transacional e restaura o estado anterior ao desativar."
+                                                       FontSize="11.5" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <StackPanel x:Name="StatusActions" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="24,0,0,0">
+                                            <Button x:Name="BtnActivate" Content="Ativar perfil" Click="BtnActivate_Click"
+                                                    Style="{StaticResource SuccessButtonStyle}" Height="42" MinWidth="126" Margin="0,0,10,0"/>
+                                            <Button x:Name="BtnDeactivate" Content="Desativar" Click="BtnDeactivate_Click"
+                                                    Style="{StaticResource DangerButtonStyle}" Height="42" MinWidth="112" IsEnabled="False"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,8,0">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,16">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="Internet padrão" Style="{StaticResource SectionTitleStyle}"/>
+                                                    <TextBlock Text="Discord, serviços e tráfego comum" Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,0"/>
+                                                </StackPanel>
+                                                <Border Grid.Column="1" Style="{StaticResource PillStyle}" Background="{DynamicResource InfoSoftBrush}" BorderBrush="{DynamicResource InfoBrush}">
+                                                    <TextBlock Text="PADRÃO" FontSize="9.5" FontWeight="Bold" Foreground="{DynamicResource InfoBrush}"/>
+                                                </Border>
+                                            </Grid>
+                                            <TextBlock Text="Adaptador" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6"/>
+                                            <ComboBox x:Name="CbWeak"/>
+                                            <Border Background="{DynamicResource SurfaceElevatedBrush}" CornerRadius="10" Padding="12" Margin="0,14,0,0">
+                                                <TextBlock Text="Use aqui a conexão que deve atender o Windows normalmente. O Discord tende a permanecer nela enquanto não houver rota mais específica."
+                                                           FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Grid.Column="1" Style="{StaticResource CardStyle}" Margin="8,0,0,0">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,16">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="Internet para jogos" Style="{StaticResource SectionTitleStyle}"/>
+                                                    <TextBlock Text="Destinos validados e proxy TCP" Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,0"/>
+                                                </StackPanel>
+                                                <Border Grid.Column="1" Style="{StaticResource PillStyle}" Background="{DynamicResource AccentSoftBrush}" BorderBrush="{DynamicResource AccentBrush}">
+                                                    <TextBlock Text="PRIORIDADE" FontSize="9.5" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
+                                                </Border>
+                                            </Grid>
+                                            <TextBlock Text="Adaptador" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6"/>
+                                            <ComboBox x:Name="CbStrong"/>
+                                            <Border Background="{DynamicResource SurfaceElevatedBrush}" CornerRadius="10" Padding="12" Margin="0,14,0,0">
+                                                <TextBlock Text="Rotas específicas têm prioridade sobre a internet padrão. Aplicativos em Proxy TCP são iniciados vinculados a este IP de origem."
+                                                           FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="1.35*"/><ColumnDefinition Width="0.85*"/></Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,8,0">
+                                        <Grid>
+                                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="220"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="Atividade do sistema" Style="{StaticResource SectionTitleStyle}"/>
+                                                    <TextBlock x:Name="LblMonitor" Text="Monitor: inativo" Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,0"/>
+                                                </StackPanel>
+                                                <Border Grid.Column="1" Style="{StaticResource PillStyle}">
+                                                    <TextBlock Text="LOG AO VIVO" FontSize="9.5" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}"/>
+                                                </Border>
+                                            </Grid>
+                                            <Border Grid.Row="1" Background="{DynamicResource SurfaceMutedBrush}" CornerRadius="12" Margin="0,15,0,0"
+                                                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+                                                <ScrollViewer x:Name="LogScroller" VerticalScrollBarVisibility="Auto" Padding="12">
+                                                    <TextBox x:Name="LogBox" IsReadOnly="True" TextWrapping="Wrap" Background="Transparent"
+                                                             BorderThickness="0" Padding="0" FontFamily="Cascadia Mono, Consolas" FontSize="10.8"
+                                                             Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                                </ScrollViewer>
+                                            </Border>
+                                            <Button Grid.Row="2" x:Name="BtnCopyLogs" Content="Copiar registro" Click="BtnCopyLogs_Click"
+                                                    Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Left" Margin="0,12,0,0"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border Grid.Column="1" Style="{StaticResource CardStyle}" Margin="8,0,0,0">
+                                        <Grid>
+                                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                            <StackPanel>
+                                                <TextBlock Text="Destinos ativos" Style="{StaticResource SectionTitleStyle}"/>
+                                                <TextBlock Text="Rotas IPv4/CIDR selecionadas para o adaptador de jogos."
+                                                           Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,0"/>
+                                            </StackPanel>
+                                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,14,0,10" MaxHeight="242">
+                                                <StackPanel x:Name="RouteListPanel"/>
+                                            </ScrollViewer>
+                                            <Button Grid.Row="2" Content="Recuperação segura" Click="BtnEmergencyReset_Click"
+                                                    Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- 1 — DESTINOS DE REDE -->
+                    <TabItem>
+                        <Grid>
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                                <Grid x:Name="RouteEditorGrid">
+                                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition x:Name="RouteIpColumn" Width="1.2*"/>
+                                        <ColumnDefinition x:Name="RouteDescriptionColumn" Width="1.2*"/>
+                                        <ColumnDefinition x:Name="RouteAddColumn" Width="Auto"/>
+                                        <ColumnDefinition x:Name="RouteImportColumn" Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                        <TextBlock Text="IP ou CIDR" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6"/>
+                                        <TextBox x:Name="TxtNewRouteIp" Height="39" FontFamily="Cascadia Mono, Consolas" ToolTip="Exemplo: 192.0.2.10/32"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                        <TextBlock Text="Descrição" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,6"/>
+                                        <TextBox x:Name="TxtNewRouteDesc" Height="39" ToolTip="Exemplo: servidor de partida"/>
+                                    </StackPanel>
+                                    <Button x:Name="BtnAddRoute" Grid.Column="2" Content="Adicionar destino" Click="BtnAddCustomRoute_Click"
+                                            Style="{StaticResource PrimaryButtonStyle}" Height="39" Margin="0,20,10,0"/>
+                                    <Button x:Name="BtnImportRoutes" Grid.Column="3" Content="Importar lote" Click="BtnBulkImport_Click"
+                                            Style="{StaticResource SoftButtonStyle}" Height="39" Margin="0,20,0,0"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Row="1" Style="{StaticResource CardStyle}">
+                                <Grid>
+                                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                    <Grid Margin="0,0,0,14">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="Destinos configurados" Style="{StaticResource SectionTitleStyle}"/>
+                                            <TextBlock Text="Somente destinos habilitados serão encaminhados pela conexão de jogos."
+                                                       Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,0"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1" Style="{StaticResource PillStyle}" Background="{DynamicResource WarningSoftBrush}" BorderBrush="{DynamicResource WarningBrush}">
+                                            <TextBlock Text="VALIDAÇÃO OBRIGATÓRIA" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource WarningBrush}"/>
+                                        </Border>
+                                    </Grid>
+                                    <DataGrid Grid.Row="1" x:Name="DgCustomRoutes" AutoGenerateColumns="False" CanUserAddRows="False"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                              CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False"
+                                              IsReadOnly="True" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
+                                              Background="{DynamicResource SurfaceBrush}" BorderThickness="0" RowHeight="48" HeadersVisibility="Column"
+                                              CellStyle="{StaticResource DgCellStyle}" RowStyle="{StaticResource DgRowStyle}"
+                                              ColumnHeaderStyle="{StaticResource DgHeaderStyle}">
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn Header="ATIVA" Width="68">
+                                                <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                                    <CheckBox IsChecked="{Binding Enabled, Mode=TwoWay}" Click="RouteEnabled_Click"
+                                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </DataTemplate></DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="DESTINO" Width="220">
+                                                <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                                    <StackPanel Orientation="Horizontal" Margin="12,0,0,0">
+                                                        <Ellipse Width="8" Height="8" Fill="{DynamicResource AccentBrush}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                        <TextBlock Text="{Binding Cidr}" FontFamily="Cascadia Mono, Consolas" FontSize="12.5"
+                                                                   Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </DataTemplate></DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="DESCRIÇÃO" Binding="{Binding Desc}" Width="*">
+                                                <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+                                                    <Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="12,0,0,0"/>
+                                                </Style></DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+                                            <DataGridTextColumn Header="ORIGEM" Binding="{Binding Source}" Width="180">
+                                                <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}"/>
+                                                    <Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="12,0,0,0"/>
+                                                </Style></DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+                                            <DataGridTemplateColumn Header="" Width="62">
+                                                <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                                    <Button Content="&#xE74D;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="12"
+                                                            Click="BtnRemoveCustomRoute_Click" Width="32" Height="32" Padding="0"
+                                                            Background="{DynamicResource DangerSoftBrush}" Foreground="{DynamicResource DangerBrush}"
+                                                            BorderBrush="Transparent" ToolTip="Remover destino"/>
+                                                </DataTemplate></DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </TabItem>
+
+                    <!-- 2 — CONEXÕES -->
+                    <TabItem>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="0.9*"/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                                        <StackPanel>
+                                            <TextBlock Text="Inspecionar conexão" Style="{StaticResource SectionTitleStyle}"/>
+                                            <TextBlock Text="Confira endereços, DNS e velocidade negociada do adaptador."
+                                                       Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,14"/>
+                                            <ComboBox x:Name="CbInspectAdapter" SelectionChanged="CbInspectAdapter_SelectionChanged"/>
+                                            <Border Style="{StaticResource SubtleCardStyle}" Margin="0,14,0,0">
+                                                <StackPanel>
+                                                    <TextBlock x:Name="LblMacAddress" Text="Endereço MAC: --" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,9"/>
+                                                    <TextBlock x:Name="LblIpAddress" Text="Endereço IPv4: --" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,9"/>
+                                                    <TextBlock x:Name="LblDns" Text="Servidores DNS: --" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,9" TextWrapping="Wrap"/>
+                                                    <TextBlock x:Name="LblSpeed" Text="Velocidade da porta: --" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                                        <StackPanel>
+                                            <TextBlock Text="Latência por adaptador" Style="{StaticResource SectionTitleStyle}"/>
+                                            <TextBlock Text="Os testes usam o endereço de origem de cada interface."
+                                                       Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,14"/>
+                                            <Grid Margin="0,0,0,16">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <TextBox x:Name="TxtPingHost" Text="1.1.1.1" Height="39" FontFamily="Cascadia Mono, Consolas" Margin="0,0,10,0"/>
+                                                <Button Grid.Column="1" x:Name="BtnStartPing" Content="Iniciar teste" Click="BtnStartPing_Click"
+                                                        Style="{StaticResource PrimaryButtonStyle}" Height="39"/>
+                                            </Grid>
+                                            <UniformGrid Columns="2" Rows="2" Margin="0,0,0,14">
+                                                <Border Style="{StaticResource SubtleCardStyle}" Margin="0,0,6,6">
+                                                    <StackPanel><TextBlock Text="LATÊNCIA ATUAL" Style="{StaticResource MetricLabelStyle}"/><TextBlock x:Name="LblPingCurrent" Text="--" Style="{StaticResource MetricValueStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                </Border>
+                                                <Border Style="{StaticResource SubtleCardStyle}" Margin="6,0,0,6">
+                                                    <StackPanel><TextBlock Text="MÉDIA" Style="{StaticResource MetricLabelStyle}"/><TextBlock x:Name="LblPingAvg" Text="--" Style="{StaticResource MetricValueStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                </Border>
+                                                <Border Style="{StaticResource SubtleCardStyle}" Margin="0,6,6,0">
+                                                    <StackPanel><TextBlock Text="JITTER" Style="{StaticResource MetricLabelStyle}"/><TextBlock x:Name="LblPingJitter" Text="--" Style="{StaticResource MetricValueStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                </Border>
+                                                <Border Style="{StaticResource SubtleCardStyle}" Margin="6,6,0,0">
+                                                    <StackPanel><TextBlock Text="PERDA" Style="{StaticResource MetricLabelStyle}"/><TextBlock x:Name="LblPingLoss" Text="--" Style="{StaticResource MetricValueStyle}" Margin="0,5,0,0"/></StackPanel>
+                                                </Border>
+                                            </UniformGrid>
+                                            <ItemsControl x:Name="AdapterPingList">
+                                                <ItemsControl.ItemTemplate><DataTemplate>
+                                                    <Border Style="{StaticResource SubtleCardStyle}" Margin="0,0,0,8" Padding="12">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="76"/><ColumnDefinition Width="76"/></Grid.ColumnDefinitions>
+                                                            <StackPanel>
+                                                                <TextBlock Text="{Binding AdapterName}" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis"/>
+                                                                <TextBlock Text="{Binding Ip}" FontFamily="Cascadia Mono, Consolas" FontSize="10.5" Foreground="{DynamicResource TextMutedBrush}"/>
+                                                            </StackPanel>
+                                                            <StackPanel Grid.Column="1" HorizontalAlignment="Center"><TextBlock Text="PING" Style="{StaticResource MetricLabelStyle}" HorizontalAlignment="Center"/><TextBlock Text="{Binding PingText}" Foreground="{Binding PingColor}" FontSize="15" FontWeight="Bold"/></StackPanel>
+                                                            <StackPanel Grid.Column="2" HorizontalAlignment="Center"><TextBlock Text="JITTER" Style="{StaticResource MetricLabelStyle}" HorizontalAlignment="Center"/><TextBlock Text="{Binding JitterText}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="15" FontWeight="Bold"/></StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate></ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource CardStyle}">
+                                        <StackPanel>
+                                            <TextBlock Text="Ferramentas de recuperação" Style="{StaticResource SectionTitleStyle}"/>
+                                            <TextBlock Text="Ações locais e reversíveis para diagnóstico da conexão."
+                                                       Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,14"/>
+                                            <Button Content="Limpar cache DNS" Click="BtnFlushDns_Click" Style="{StaticResource SoftButtonStyle}" Margin="0,0,0,10"/>
+                                            <Button Content="Reiniciar adaptador selecionado" Click="BtnResetAdapter_Click" Style="{StaticResource SoftButtonStyle}" Margin="0,0,0,10"/>
+                                            <Button x:Name="BtnEmergencyReset" Content="Recuperação segura" Click="BtnEmergencyReset_Click"
+                                                    Background="{DynamicResource WarningSoftBrush}" Foreground="{DynamicResource WarningBrush}"
+                                                    BorderBrush="{DynamicResource WarningBrush}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                    <Border Style="{StaticResource CardStyle}">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,18">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="Tráfego em tempo real" Style="{StaticResource SectionTitleStyle}"/>
+                                                    <TextBlock Text="Contadores nativos atualizados a cada segundo."
+                                                               Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,0"/>
+                                                </StackPanel>
+                                                <Border Grid.Column="1" Style="{StaticResource PillStyle}" Background="{DynamicResource SuccessSoftBrush}" BorderBrush="{DynamicResource SuccessBrush}">
+                                                    <StackPanel Orientation="Horizontal"><Ellipse Width="6" Height="6" Fill="{DynamicResource SuccessBrush}" Margin="0,0,6,0"/><TextBlock Text="AO VIVO" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource SuccessBrush}"/></StackPanel>
+                                                </Border>
+                                            </Grid>
+                                            <Grid Margin="0,0,0,16">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                                <Border Style="{StaticResource SubtleCardStyle}" Margin="0,0,6,0">
+                                                    <StackPanel><TextBlock Text="DOWNLOAD TOTAL" Style="{StaticResource MetricLabelStyle}"/><TextBlock x:Name="LblDownloadSpeed" Text="0.0 bps" Style="{StaticResource MetricValueStyle}" Margin="0,6,0,0"/><TextBlock Text="recebimento agregado" FontSize="10.5" Foreground="{DynamicResource TextMutedBrush}"/></StackPanel>
+                                                </Border>
+                                                <Border Grid.Column="1" Style="{StaticResource SubtleCardStyle}" Margin="6,0,0,0">
+                                                    <StackPanel><TextBlock Text="UPLOAD TOTAL" Style="{StaticResource MetricLabelStyle}"/><TextBlock x:Name="LblUploadSpeed" Text="0.0 bps" Style="{StaticResource MetricValueStyle}" Margin="0,6,0,0"/><TextBlock Text="envio agregado" FontSize="10.5" Foreground="{DynamicResource TextMutedBrush}"/></StackPanel>
+                                                </Border>
+                                            </Grid>
+                                            <ItemsControl x:Name="AdapterTrafficList">
+                                                <ItemsControl.ItemTemplate><DataTemplate>
+                                                    <Border Style="{StaticResource SubtleCardStyle}" Margin="0,0,0,10">
+                                                        <Grid>
+                                                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                                <StackPanel><TextBlock Text="{Binding AdapterName}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/><TextBlock Text="{Binding Ip}" FontSize="10.5" FontFamily="Cascadia Mono, Consolas" Foreground="{DynamicResource TextMutedBrush}"/></StackPanel>
+                                                                <TextBlock Grid.Column="1" Text="{Binding UsagePercent}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                            <Grid Grid.Row="1" Margin="0,12,0,10">
+                                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                                                <StackPanel><TextBlock Text="DOWNLOAD" Style="{StaticResource MetricLabelStyle}"/><TextBlock Text="{Binding DownSpeed}" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}"/></StackPanel>
+                                                                <StackPanel Grid.Column="1"><TextBlock Text="UPLOAD" Style="{StaticResource MetricLabelStyle}"/><TextBlock Text="{Binding UpSpeed}" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource InfoBrush}"/></StackPanel>
+                                                            </Grid>
+                                                            <Border Grid.Row="2" Height="5" CornerRadius="3" Background="{DynamicResource SurfaceMutedBrush}">
+                                                                <Border HorizontalAlignment="Left" Height="5" CornerRadius="3" Background="{DynamicResource AccentBrush}" Width="{Binding BarWidth}"/>
+                                                            </Border>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate></ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- 3 — APLICATIVOS -->
+                    <TabItem>
+                        <Grid>
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                                <Grid x:Name="ApplicationsHeaderGrid">
+                                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <StackPanel x:Name="ApplicationsHeaderText">
+                                        <TextBlock Text="Aplicativos e jogos" Style="{StaticResource SectionTitleStyle}"/>
+                                        <TextBlock Text="Rotas seguras para jogos protegidos; Proxy TCP para navegadores e clientes compatíveis."
+                                                   Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,0"/>
+                                    </StackPanel>
+                                    <Button x:Name="BtnSelectFolder" Grid.Column="1" Content="Selecionar pasta" Click="BtnSelectGameFolder_Click"
+                                            Style="{StaticResource SoftButtonStyle}" Margin="12,0,10,0"/>
+                                    <Button x:Name="BtnAddExecutable" Grid.Column="2" Content="Adicionar executável" Click="BtnAddExeManual_Click"
+                                            Style="{StaticResource PrimaryButtonStyle}"/>
+                                </Grid>
+                            </Border>
+
+                            <Grid x:Name="ApplicationsLayoutGrid" Grid.Row="1">
+                                <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition x:Name="ApplicationsDetailsColumn" Width="330"/></Grid.ColumnDefinitions>
+                                <Border x:Name="ApplicationsTableCard" Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,8,0">
+                                    <DataGrid x:Name="DgGameExes" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                              CanUserReorderColumns="False" CanUserResizeRows="False" IsReadOnly="True"
+                                              GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
+                                              Background="{DynamicResource SurfaceBrush}" BorderThickness="0" RowHeight="58" SelectionMode="Single"
+                                              CellStyle="{StaticResource DgCellStyle}" RowStyle="{StaticResource DgRowStyle}"
+                                              ColumnHeaderStyle="{StaticResource DgHeaderStyle}">
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn Header="" Width="42"><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                                <Ellipse Width="10" Height="10" Fill="{Binding StatusColor}" HorizontalAlignment="Center" ToolTip="{Binding Path}"/>
+                                            </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="APLICATIVO" Width="*"><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                                <StackPanel Margin="8,0,8,0" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding Path}" FontSize="9.8" Foreground="{DynamicResource TextMutedBrush}" TextTrimming="CharacterEllipsis" FontFamily="Cascadia Mono, Consolas"/>
+                                                </StackPanel>
+                                            </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="MODO" Width="126"><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                                <Button Click="BtnCycleBindingMode_Click" Content="{Binding BindingModeText}" Height="30" Padding="8,0"
+                                                        Background="{DynamicResource InfoSoftBrush}" Foreground="{DynamicResource InfoBrush}" BorderBrush="Transparent" FontSize="10"/>
+                                            </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="SAÍDA" Width="92"><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                                <Button Click="BtnCyclePreferredAdapter_Click" Content="{Binding PreferredAdapterText}" Height="30" Padding="7,0"
+                                                        Background="{DynamicResource SuccessSoftBrush}" Foreground="{DynamicResource SuccessBrush}" BorderBrush="Transparent" FontSize="10"/>
+                                            </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="VISTO" Width="72"><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                                <TextBlock Text="{Binding LastSeenStr}" FontFamily="Cascadia Mono, Consolas" FontSize="10.5" Foreground="{DynamicResource TextMutedBrush}" HorizontalAlignment="Center"/>
+                                            </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="AÇÕES" Width="154"><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <Button Content="&#xE73E;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Click="BtnToggleExe_Click" Width="30" Height="30" Padding="0" Margin="0,0,6,0" Background="{DynamicResource InfoSoftBrush}" Foreground="{DynamicResource InfoBrush}" BorderBrush="Transparent" ToolTip="Habilitar ou desabilitar"/>
+                                                    <Button Content="&#xE768;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Click="BtnLaunchExe_Click" Width="30" Height="30" Padding="0" Margin="0,0,6,0" Background="{DynamicResource AccentSoftBrush}" Foreground="{DynamicResource AccentBrush}" BorderBrush="Transparent" ToolTip="Iniciar pelo Proxy TCP"/>
+                                                    <Button Content="&#xE721;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Click="BtnAnalyzeExe_Click" Width="30" Height="30" Padding="0" Margin="0,0,6,0" Background="{DynamicResource SuccessSoftBrush}" Foreground="{DynamicResource SuccessBrush}" BorderBrush="Transparent" ToolTip="Analisar compatibilidade"/>
+                                                    <Button Content="&#xE74D;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Click="BtnRemoveExe_Click" Width="30" Height="30" Padding="0" Background="{DynamicResource DangerSoftBrush}" Foreground="{DynamicResource DangerBrush}" BorderBrush="Transparent" ToolTip="Remover"/>
+                                                </StackPanel>
+                                            </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Border>
+
+                                <ScrollViewer x:Name="ApplicationsDetailsPanel" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="8,0,0,0">
+                                    <StackPanel>
+                                        <Border x:Name="AnalysisBorder" Style="{StaticResource CardStyle}" Visibility="Collapsed" Margin="0,0,0,16">
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                                    <TextBlock x:Name="LblAnalysisExe" Text="Análise" Style="{StaticResource SectionTitleStyle}"/>
+                                                    <Border x:Name="AnalysisLoadingDot" Width="8" Height="8" CornerRadius="4" Background="{DynamicResource WarningBrush}"
+                                                            Margin="10,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
+                                                </StackPanel>
+                                                <Border Style="{StaticResource SubtleCardStyle}">
+                                                    <ScrollViewer x:Name="AnalysisScroller" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="360">
+                                                        <StackPanel x:Name="AnalysisContentPanel"/>
+                                                    </ScrollViewer>
+                                                </Border>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Style="{StaticResource CardStyle}">
+                                            <StackPanel>
+                                                <TextBlock Text="Cobertura por modo" Style="{StaticResource SectionTitleStyle}"/>
+                                                <TextBlock Text="O Nexus mostra os limites de cada estratégia para evitar uma falsa sensação de proteção."
+                                                           Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,14"/>
+                                                <Border Style="{StaticResource SubtleCardStyle}" Margin="0,0,0,10">
+                                                    <StackPanel>
+                                                        <TextBlock Text="Rotas seguras" FontWeight="SemiBold" Foreground="{DynamicResource SuccessBrush}"/>
+                                                        <TextBlock Text="Indicado para Valorant e jogos protegidos. Usa rotas do Windows e bloqueio de vazamento, sem injeção."
+                                                                   FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                                                    </StackPanel>
+                                                </Border>
+                                                <Border Style="{StaticResource SubtleCardStyle}" Margin="0,0,0,10">
+                                                    <StackPanel>
+                                                        <TextBlock Text="Proxy TCP" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}"/>
+                                                        <TextBlock Text="Indicado para navegadores e clientes compatíveis. Não vincula UDP/WebRTC de forma universal."
+                                                                   FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                                                    </StackPanel>
+                                                </Border>
+                                                <Border Background="{DynamicResource WarningSoftBrush}" BorderBrush="{DynamicResource WarningBrush}" BorderThickness="1" CornerRadius="12" Padding="13">
+                                                    <TextBlock Text="A cobertura do Valorant depende dos destinos habilitados. O Discord normalmente deve permanecer na internet padrão, não no Proxy TCP."
+                                                               FontSize="11" Foreground="{DynamicResource WarningBrush}" TextWrapping="Wrap"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Grid>
+                        </Grid>
+                    </TabItem>
+
+                    <!-- 4 — CONFIGURAÇÕES -->
+                    <TabItem>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                                        <StackPanel>
+                                            <TextBlock Text="Aparência" Style="{StaticResource SectionTitleStyle}"/>
+                                            <TextBlock Text="Escolha o tema. As transições respeitam a preferência de animações do Windows."
+                                                       Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,16"/>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                                <Button x:Name="BtnThemeDark" Grid.Column="0" Click="BtnThemeDark_Click" Height="76" Margin="0,0,7,0"
+                                                        Background="{DynamicResource SurfaceMutedBrush}" BorderBrush="{DynamicResource BorderStrongBrush}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="&#xE708;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="20" Margin="0,0,12,0"/>
+                                                        <StackPanel><TextBlock Text="Escuro" FontSize="14" FontWeight="SemiBold"/><TextBlock Text="Foco e menor brilho" FontSize="10.5" Foreground="{DynamicResource TextMutedBrush}"/></StackPanel>
+                                                    </StackPanel>
+                                                </Button>
+                                                <Button x:Name="BtnThemeLight" Grid.Column="1" Click="BtnThemeLight_Click" Height="76" Margin="7,0,0,0"
+                                                        Background="{DynamicResource SurfaceElevatedBrush}" BorderBrush="{DynamicResource BorderBrush}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="&#xE706;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="20" Margin="0,0,12,0"/>
+                                                        <StackPanel><TextBlock Text="Claro" FontSize="14" FontWeight="SemiBold"/><TextBlock Text="Leitura em ambientes claros" FontSize="10.5" Foreground="{DynamicResource TextMutedBrush}"/></StackPanel>
+                                                    </StackPanel>
+                                                </Button>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource CardStyle}">
+                                        <StackPanel>
+                                            <TextBlock Text="Inicialização e bandeja" Style="{StaticResource SectionTitleStyle}"/>
+                                            <TextBlock Text="Comportamentos persistidos no perfil do usuário."
+                                                       Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,18"/>
+                                            <CheckBox x:Name="ChkStartWindows" Content="Iniciar oculto junto com o Windows" Click="SaveSettings_Click" Margin="0,0,0,18"/>
+                                            <CheckBox x:Name="ChkTray" Content="Minimizar para a bandeja do sistema" Click="SaveSettings_Click" Margin="0,0,0,18"/>
+                                            <CheckBox x:Name="ChkAutoActivate" Content="Ativar o perfil automaticamente ao iniciar" Click="SaveSettings_Click"/>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                                        <StackPanel>
+                                            <TextBlock Text="Princípios de segurança" Style="{StaticResource SectionTitleStyle}"/>
+                                            <TextBlock Text="A edição para jogos permanece conservadora."
+                                                       Style="{StaticResource SectionDescriptionStyle}" Margin="0,3,0,16"/>
+                                            <Grid Margin="0,0,0,11">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="22"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                                <Border Width="18" Height="18" CornerRadius="9" Background="{DynamicResource SuccessSoftBrush}" VerticalAlignment="Center">
+                                                    <TextBlock Text="✓" Foreground="{DynamicResource SuccessBrush}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Grid.Column="1" Text="Sem injeção de DLL ou hook de Winsock" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
+                                            </Grid>
+                                            <Grid Margin="0,0,0,11">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="22"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                                <Border Width="18" Height="18" CornerRadius="9" Background="{DynamicResource SuccessSoftBrush}" VerticalAlignment="Center">
+                                                    <TextBlock Text="✓" Foreground="{DynamicResource SuccessBrush}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Grid.Column="1" Text="Sem leitura ou modificação de memória do jogo" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
+                                            </Grid>
+                                            <Grid Margin="0,0,0,11">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="22"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                                <Border Width="18" Height="18" CornerRadius="9" Background="{DynamicResource SuccessSoftBrush}" VerticalAlignment="Center">
+                                                    <TextBlock Text="✓" Foreground="{DynamicResource SuccessBrush}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Grid.Column="1" Text="Sem driver próprio no modo de jogos" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
+                                            </Grid>
+                                            <Grid Margin="0,0,0,11">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="22"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                                <Border Width="18" Height="18" CornerRadius="9" Background="{DynamicResource SuccessSoftBrush}" VerticalAlignment="Center">
+                                                    <TextBlock Text="✓" Foreground="{DynamicResource SuccessBrush}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Grid.Column="1" Text="Rollback pelo diário transacional" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
+                                            </Grid>
+                                            <Grid Margin="0,0,0,11">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="22"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                                <Border Width="18" Height="18" CornerRadius="9" Background="{DynamicResource SuccessSoftBrush}" VerticalAlignment="Center">
+                                                    <TextBlock Text="✓" Foreground="{DynamicResource SuccessBrush}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Grid.Column="1" Text="Rotas externas não são removidas" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource CardStyle}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="64"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                            <Border Width="54" Height="54" CornerRadius="16" Background="{DynamicResource SurfaceElevatedBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+                                                <Image Source="pack://application:,,,/NexusNetworkBinder.png" Width="46" Height="46" Stretch="Uniform"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="Nexus Network Binder" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                                <TextBlock Text="Versão 21.1 • Interface responsiva" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,3,0,0"/>
+                                                <TextBlock Text="A logo original foi preservada em toda a identidade visual." FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,7,0,0" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

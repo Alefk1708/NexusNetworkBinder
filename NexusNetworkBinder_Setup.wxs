@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║   Nexus Network Binder — WiX v4 Installer                   ║
+  ║   Gera: NexusNetworkBinder_Setup.msi                        ║
+  ║                                                              ║
+  ║   Para compilar: execute Publish_e_Build_MSI.bat     ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package
+    Name="Nexus Network Binder"
+    Manufacturer="Alefk1708"
+    Version="21.1.2"
+    UpgradeCode="A7F3C2D1-8E4B-4A9F-B6C3-1D2E5F8A0B7C"
+    Scope="perMachine"
+    Compressed="yes">
+
+    <!-- Tudo em um único .msi (sem .cab separado) -->
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- ── Upgrade automático (desinstala versão antiga antes de instalar nova) ── -->
+    <MajorUpgrade
+      DowngradeErrorMessage="Uma versão mais nova do Nexus Network Binder já está instalada."
+      Schedule="afterInstallInitialize" />
+
+    <!-- ── Ícone exibido no Painel de Controle ── -->
+    <Icon Id="AppIcon" SourceFile="$(var.IconPath)" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+    <Property Id="ARPHELPLINK"    Value="https://github.com/Alefk1708/NexusNetworkBinder" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/Alefk1708/NexusNetworkBinder" />
+    <Property Id="ARPNOREPAIR" Value="1" />
+
+    <!--
+      VersionNT/WindowsBuild podem ser virtualizados pelo Windows Installer e reportar
+      603/9600 inclusive no Windows 10/11. Para obter o build real, lemos diretamente
+      HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\CurrentBuildNumber.
+      "Installed OR" mantém reparo, atualização e desinstalação disponíveis.
+    -->
+    <Property Id="NNB_WINDOWS_BUILD" Secure="yes">
+      <RegistrySearch
+        Id="NnbWindowsBuildSearch"
+        Root="HKLM"
+        Key="SOFTWARE\Microsoft\Windows NT\CurrentVersion"
+        Name="CurrentBuildNumber"
+        Type="raw"
+        Bitness="always64" />
+    </Property>
+
+    <Launch
+      Condition="Installed OR (VersionNT64 AND NNB_WINDOWS_BUILD AND NNB_WINDOWS_BUILD &gt;= 10240)"
+      Message="O Nexus Network Binder requer Windows 10 ou Windows 11 de 64 bits." />
+
+    <!-- ── Interface visual do instalador (wizard padrão do WiX) ── -->
+    <ui:WixUI Id="WixUI_InstallDir" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <!-- ── Aceite de licença (aponte para um .rtf se tiver, senão remova as 2 linhas abaixo) ── -->
+    <!--
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    -->
+
+    <!-- ── Diretórios ── -->
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Nexus Network Binder" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppMenuFolder" Name="Nexus Network Binder" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <!-- ── Feature principal ── -->
+    <Feature Id="ProductFeature" Title="Nexus Network Binder" Level="1">
+      <ComponentGroupRef Id="AppComponents" />
+      <ComponentGroupRef Id="AppShortcuts" />
+    </Feature>
+
+  </Package>
+
+  <!-- ════════════════════════════════════════════════════════════
+       Componentes: arquivos instalados
+       ════════════════════════════════════════════════════════════ -->
+  <Fragment>
+    <ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
+
+      <!-- Executável principal (SelfContained — .NET 8 já embutido) -->
+      <Component Id="MainExe" Guid="B1C2D3E4-F5A6-7890-ABCD-EF1234567890">
+        <File Id="NexusExe"
+              Source="$(var.PublishDir)\NexusNetworkBinder.exe"
+              KeyPath="yes" />
+      </Component>
+
+      <!-- Ícone (usado pela bandeja do sistema e pelo uninstall) -->
+      <Component Id="AppIcoFile" Guid="C2D3E4F5-A6B7-8901-BCDE-F12345678901">
+        <File Id="NexusIco"
+              Source="$(var.IconPath)"
+              KeyPath="yes" />
+      </Component>
+
+    </ComponentGroup>
+  </Fragment>
+
+  <!-- ════════════════════════════════════════════════════════════
+       Atalhos: Menu Iniciar + Área de Trabalho
+       ════════════════════════════════════════════════════════════ -->
+  <Fragment>
+    <ComponentGroup Id="AppShortcuts">
+
+      <!-- Atalho no Menu Iniciar -->
+      <Component Id="StartMenuShortcut"
+                 Directory="AppMenuFolder"
+                 Guid="D3E4F5A6-B7C8-9012-CDEF-012345678902">
+        <Shortcut Id="StartMenuShortcutLink"
+                  Name="Nexus Network Binder"
+                  Description="Controle seguro de múltiplos adaptadores de rede"
+                  Target="[INSTALLFOLDER]NexusNetworkBinder.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon" />
+        <RemoveFolder Id="CleanAppMenuFolder"
+                      Directory="AppMenuFolder"
+                      On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\NexusNetworkBinder"
+                       Name="StartMenuInstalled"
+                       Type="integer" Value="1"
+                       KeyPath="yes" />
+      </Component>
+
+      <!-- Atalho na Área de Trabalho -->
+      <Component Id="DesktopShortcut"
+                 Directory="DesktopFolder"
+                 Guid="E4F5A6B7-C8D9-0123-DEF0-123456789003">
+        <Shortcut Id="DesktopShortcutLink"
+                  Name="Nexus Network Binder"
+                  Description="Controle seguro de múltiplos adaptadores de rede"
+                  Target="[INSTALLFOLDER]NexusNetworkBinder.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\NexusNetworkBinder"
+                       Name="DesktopInstalled"
+                       Type="integer" Value="1"
+                       KeyPath="yes" />
+      </Component>
+
+    </ComponentGroup>
+  </Fragment>
+
+</Wix>

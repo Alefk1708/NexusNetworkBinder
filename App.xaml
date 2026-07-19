@@ -102,6 +102,39 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <!-- Feedback tátil: o botão afunda ao pressionar e volta suavemente. -->
+                <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="0.96" Duration="0:0:0.08"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"/>
+                            <DoubleAnimation To="0.96" Duration="0:0:0.08"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="PreviewMouseLeftButtonUp">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.16"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"/>
+                            <DoubleAnimation To="1" Duration="0:0:0.16"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.14"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"/>
+                            <DoubleAnimation To="1" Duration="0:0:0.14"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
@@ -136,10 +169,45 @@
             <Setter Property="Margin" Value="0,0,0,7"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="ClipToBounds" Value="True"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value><ScaleTransform ScaleX="1" ScaleY="1"/></Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="{DynamicResource HoverBrush}"/>
                 </Trigger>
+                <!-- Micro-animação de toque: o item afunda levemente ao pressionar. -->
+                <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="0.97" Duration="0:0:0.09"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"/>
+                            <DoubleAnimation To="0.97" Duration="0:0:0.09"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="PreviewMouseLeftButtonUp">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.14"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"/>
+                            <DoubleAnimation To="1" Duration="0:0:0.14"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.14"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"/>
+                            <DoubleAnimation To="1" Duration="0:0:0.14"
+                                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
             </Style.Triggers>
         </Style>
 

@@ -1,0 +1,2 @@
+C:\Users\Admin\source\repos\NexusNetworkBinder\NexusNetworkBinder\dist\win-x64\NexusNetworkBinder.pdb
+C:\Users\Admin\source\repos\NexusNetworkBinder\NexusNetworkBinder\dist\win-x64\NexusNetworkBinder.exe

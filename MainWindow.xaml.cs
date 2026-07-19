@@ -222,6 +222,7 @@ namespace NexusNetworkBinder
             RefreshAdapters();
             UpdateResponsiveLayout(ActualWidth, ActualHeight, animateNavigation: false);
             _responsiveLayoutInitialized = true;
+            AnimatePageTransition();
             _netTimer!.Start();
 
             if (NetworkBinder.HasPendingRecovery)
@@ -1045,6 +1046,23 @@ namespace NexusNetworkBinder
             StatusCard.Background = new SolidColorBrush(background);
             StatusCard.BorderBrush = statusBrush;
             StatusCard.ToolTip = detail;
+
+            // Pulso suave no indicador enquanto o perfil estiver ativo.
+            if (state == BinderState.Active && SystemParameters.ClientAreaAnimation)
+            {
+                StatusDot.BeginAnimation(
+                    UIElement.OpacityProperty,
+                    new DoubleAnimation(0.45, 1.0, new Duration(TimeSpan.FromMilliseconds(900)))
+                    {
+                        AutoReverse = true,
+                        RepeatBehavior = RepeatBehavior.Forever
+                    });
+            }
+            else
+            {
+                StatusDot.BeginAnimation(UIElement.OpacityProperty, null);
+                StatusDot.Opacity = 1.0;
+            }
         }
 
         void OnMonitor(bool leak, int count) => Dispatcher.Invoke(() => { LblMonitor.Text = leak ? $"⚠ Discord: {count} conexão(ões) TCP IPv4 no forte" : "✓ Nenhum vazamento TCP IPv4 detectado (UDP/IPv6 não inferidos)"; LblMonitor.Foreground = new SolidColorBrush(leak ? Color.FromRgb(0xEF,0x44,0x44) : Color.FromRgb(0x10,0xB9,0x81)); });
@@ -1216,6 +1234,11 @@ namespace NexusNetworkBinder
         // ── Layout responsivo e navbar ─────────────────────────────────────────
         bool _navExpanded = true;
 
+        // Estados dos arranjos responsivos: null força a primeira aplicação.
+        bool? _overviewAdaptersStacked, _overviewBottomStacked, _connectionsStacked, _settingsStacked;
+        bool? _appsSideBySide;
+        DispatcherTimer? _footerCollapseTimer;
+
         void FitWindowToWorkArea()
         {
             var area = SystemParameters.WorkArea;
@@ -1278,9 +1301,45 @@ namespace NexusNetworkBinder
                 StatusActions.HorizontalAlignment = HorizontalAlignment.Right;
             }
 
-            // Editor de rotas: campos na primeira linha e botões na segunda quando necessário.
-            if (contentWidth < 940)
+            // Editor de rotas: três arranjos conforme a largura disponível.
+            if (contentWidth < 640)
             {
+                // Muito estreito: campos empilhados e botões lado a lado na base.
+                Grid.SetRow(RouteIpPanel, 0);
+                Grid.SetColumn(RouteIpPanel, 0);
+                Grid.SetColumnSpan(RouteIpPanel, 2);
+                RouteIpPanel.Margin = new Thickness(0);
+
+                Grid.SetRow(RouteDescPanel, 1);
+                Grid.SetColumn(RouteDescPanel, 0);
+                Grid.SetColumnSpan(RouteDescPanel, 2);
+                RouteDescPanel.Margin = new Thickness(0, 10, 0, 0);
+
+                Grid.SetRow(BtnAddRoute, 2);
+                Grid.SetColumn(BtnAddRoute, 0);
+                Grid.SetColumnSpan(BtnAddRoute, 1);
+                BtnAddRoute.Margin = new Thickness(0, 12, 6, 0);
+                BtnAddRoute.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+                Grid.SetRow(BtnImportRoutes, 2);
+                Grid.SetColumn(BtnImportRoutes, 1);
+                Grid.SetColumnSpan(BtnImportRoutes, 1);
+                BtnImportRoutes.Margin = new Thickness(6, 12, 0, 0);
+                BtnImportRoutes.HorizontalAlignment = HorizontalAlignment.Stretch;
+            }
+            else if (contentWidth < 940)
+            {
+                // Intermediário: campos lado a lado, botões na segunda linha.
+                Grid.SetRow(RouteIpPanel, 0);
+                Grid.SetColumn(RouteIpPanel, 0);
+                Grid.SetColumnSpan(RouteIpPanel, 1);
+                RouteIpPanel.Margin = new Thickness(0, 0, 10, 0);
+
+                Grid.SetRow(RouteDescPanel, 0);
+                Grid.SetColumn(RouteDescPanel, 1);
+                Grid.SetColumnSpan(RouteDescPanel, 1);
+                RouteDescPanel.Margin = new Thickness(0, 0, 10, 0);
+
                 Grid.SetRow(BtnAddRoute, 1);
                 Grid.SetColumn(BtnAddRoute, 0);
                 Grid.SetColumnSpan(BtnAddRoute, 1);
@@ -1295,6 +1354,17 @@ namespace NexusNetworkBinder
             }
             else
             {
+                // Largo: tudo em uma única linha.
+                Grid.SetRow(RouteIpPanel, 0);
+                Grid.SetColumn(RouteIpPanel, 0);
+                Grid.SetColumnSpan(RouteIpPanel, 1);
+                RouteIpPanel.Margin = new Thickness(0, 0, 10, 0);
+
+                Grid.SetRow(RouteDescPanel, 0);
+                Grid.SetColumn(RouteDescPanel, 1);
+                Grid.SetColumnSpan(RouteDescPanel, 1);
+                RouteDescPanel.Margin = new Thickness(0, 0, 10, 0);
+
                 Grid.SetRow(BtnAddRoute, 0);
                 Grid.SetColumn(BtnAddRoute, 2);
                 Grid.SetColumnSpan(BtnAddRoute, 1);
@@ -1338,9 +1408,95 @@ namespace NexusNetworkBinder
                 BtnAddExecutable.Margin = new Thickness(0);
             }
 
-            // O painel de análise permanece disponível, mas ocupa menos espaço em telas compactas.
-            ApplicationsDetailsColumn.Width = new GridLength(contentWidth < 1040 ? 286 : 330);
-            ApplicationsDetailsPanel.Margin = new Thickness(contentWidth < 1040 ? 6 : 8, 0, 0, 0);
+            // Painel de detalhes dos aplicativos: ao lado da tabela em telas largas,
+            // embaixo dela em telas estreitas.
+            var appsSideBySide = contentWidth >= 1080;
+            if (_appsSideBySide != appsSideBySide)
+            {
+                _appsSideBySide = appsSideBySide;
+                if (appsSideBySide)
+                {
+                    Grid.SetRow(ApplicationsDetailsPanel, 0);
+                    Grid.SetColumn(ApplicationsDetailsPanel, 1);
+                    ApplicationsDetailsPanel.MaxHeight = double.PositiveInfinity;
+                    ApplicationsTableCard.Margin = new Thickness(0, 0, 8, 0);
+                }
+                else
+                {
+                    ApplicationsDetailsColumn.Width = new GridLength(0);
+                    Grid.SetRow(ApplicationsDetailsPanel, 1);
+                    Grid.SetColumn(ApplicationsDetailsPanel, 0);
+                    ApplicationsDetailsPanel.MaxHeight = 340;
+                    ApplicationsTableCard.Margin = new Thickness(0);
+                    ApplicationsDetailsPanel.Margin = new Thickness(0, 12, 0, 0);
+                }
+            }
+            if (appsSideBySide)
+            {
+                ApplicationsDetailsColumn.Width = new GridLength(contentWidth < 1240 ? 286 : 330);
+                ApplicationsDetailsPanel.Margin = new Thickness(contentWidth < 1240 ? 6 : 8, 0, 0, 0);
+            }
+
+            // Empilha os painéis lado a lado quando a largura fica estreita.
+            SetSideBySide(OverviewAdaptersGrid, CardInternet, CardGames, contentWidth >= 780,
+                1, 1, ref _overviewAdaptersStacked,
+                new Thickness(0, 0, 8, 0), new Thickness(8, 0, 0, 0),
+                new Thickness(0, 0, 0, 16), new Thickness(0));
+
+            SetSideBySide(OverviewBottomGrid, CardActivity, CardRoutes, contentWidth >= 1000,
+                1.35, 0.85, ref _overviewBottomStacked,
+                new Thickness(0, 0, 8, 0), new Thickness(8, 0, 0, 0),
+                new Thickness(0, 0, 0, 16), new Thickness(0));
+
+            SetSideBySide(ConnectionsLayoutGrid, ConnectionsLeftPanel, ConnectionsRightPanel, contentWidth >= 1000,
+                0.9, 1.1, ref _connectionsStacked,
+                new Thickness(0, 0, 8, 0), new Thickness(8, 0, 0, 0),
+                new Thickness(0, 0, 0, 16), new Thickness(0));
+
+            SetSideBySide(SettingsLayoutGrid, SettingsLeftPanel, SettingsRightPanel, contentWidth >= 880,
+                1, 1, ref _settingsStacked,
+                new Thickness(0, 0, 8, 0), new Thickness(8, 0, 0, 0),
+                new Thickness(0, 0, 0, 16), new Thickness(0));
+        }
+
+        /// <summary>
+        /// Alterna um grid de duas colunas entre lado a lado e empilhado.
+        /// Só rearranja quando o estado muda, evitando custo de layout a cada redimensionamento.
+        /// </summary>
+        void SetSideBySide(Grid grid, FrameworkElement first, FrameworkElement second, bool sideBySide,
+            double firstWeight, double secondWeight, ref bool? state,
+            Thickness firstSideMargin, Thickness secondSideMargin,
+            Thickness firstStackMargin, Thickness secondStackMargin)
+        {
+            if (state == sideBySide) return;
+            state = sideBySide;
+
+            grid.RowDefinitions.Clear();
+            grid.ColumnDefinitions.Clear();
+
+            if (sideBySide)
+            {
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(firstWeight, GridUnitType.Star) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(secondWeight, GridUnitType.Star) });
+                Grid.SetRow(first, 0);
+                Grid.SetColumn(first, 0);
+                Grid.SetRow(second, 0);
+                Grid.SetColumn(second, 1);
+                first.Margin = firstSideMargin;
+                second.Margin = secondSideMargin;
+            }
+            else
+            {
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                Grid.SetRow(first, 0);
+                Grid.SetColumn(first, 0);
+                Grid.SetRow(second, 1);
+                Grid.SetColumn(second, 0);
+                first.Margin = firstStackMargin;
+                second.Margin = secondStackMargin;
+            }
         }
 
         void BtnToggleNav_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -1357,6 +1513,36 @@ namespace NexusNetworkBinder
             var targetWidth = new GridLength(expanded ? 232 : 64);
             var targetOpacity = expanded ? 1.0 : 0.0;
             TxtMenuToggle.Text = expanded ? "Recolher menu" : "Expandir menu";
+
+            // Geometria do modo recolhido: margem lateral menor faz a área útil do
+            // item ficar com 48px — com o padding de 12px, o ícone de 24px encaixa
+            // exatamente no centro, sem corte nem desalinhamento.
+            SidebarContent.Margin = expanded ? new Thickness(12, 18, 12, 14) : new Thickness(8, 18, 8, 14);
+
+            var items = new[] { MenuPrincipal, MenuRotas, MenuInterfaces, MenuJogos, MenuConfig };
+            foreach (var item in items)
+            {
+                // Tooltips só fazem sentido quando o rótulo está oculto.
+                ToolTipService.SetIsEnabled(item, !expanded);
+            }
+
+            // Com o texto do rodapé oculto, o ponto de status recentraliza no cartão.
+            NavFooterDot.Margin = expanded ? new Thickness(0) : new Thickness(8, 0, 0, 0);
+
+            // No modo recolhido o texto do rodapé some e o indicador de status centraliza.
+            if (expanded)
+            {
+                _footerCollapseTimer?.Stop();
+                NavFooterPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                _footerCollapseTimer ??= new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(180) };
+                _footerCollapseTimer.Tick -= FooterCollapseTimer_Tick;
+                _footerCollapseTimer.Tick += FooterCollapseTimer_Tick;
+                _footerCollapseTimer.Stop();
+                _footerCollapseTimer.Start();
+            }
 
             var labels = new UIElement[]
             {
@@ -1397,13 +1583,16 @@ namespace NexusNetworkBinder
                 label.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
         }
 
+        void FooterCollapseTimer_Tick(object? sender, EventArgs e)
+        {
+            _footerCollapseTimer?.Stop();
+            if (!_navExpanded)
+                NavFooterPanel.Visibility = Visibility.Collapsed;
+        }
+
         void Menu_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            foreach (var item in new[] { MenuPrincipal, MenuRotas, MenuInterfaces, MenuJogos, MenuConfig })
-                item.Background = Brushes.Transparent;
-
             if (sender is not Border selected) return;
-            selected.SetResourceReference(Border.BackgroundProperty, "SelectedBrush");
 
             var (index, title, subtitle) = selected.Name switch
             {
@@ -1426,19 +1615,43 @@ namespace NexusNetworkBinder
         {
             var items = new[] { MenuPrincipal, MenuRotas, MenuInterfaces, MenuJogos, MenuConfig };
             var labels = new[] { TxtMenuPrincipal, TxtMenuRotas, TxtMenuInterfaces, TxtMenuJogos, TxtMenuConfig };
+            var icons = new[] { IcoPrincipal, IcoRotas, IcoInterfaces, IcoJogos, IcoConfig };
+            var indicators = new[] { IndPrincipal, IndRotas, IndInterfaces, IndJogos, IndConfig };
+
             for (var index = 0; index < items.Length; index++)
             {
-                if (index == selectedIndex)
+                var isSelected = index == selectedIndex;
+                if (isSelected)
                 {
+                    // Valor local intencional: o item ativo mantém o destaque mesmo sob o mouse.
                     items[index].SetResourceReference(Border.BackgroundProperty, "SelectedBrush");
                     labels[index].SetResourceReference(TextBlock.ForegroundProperty, "TextPrimaryBrush");
                     labels[index].FontWeight = FontWeights.SemiBold;
+                    icons[index].SetResourceReference(TextBlock.ForegroundProperty, "AccentBrush");
                 }
                 else
                 {
-                    items[index].Background = Brushes.Transparent;
+                    // ClearValue (e não Background = Transparent) devolve o controle ao estilo.
+                    // Um valor local Transparent venceria o trigger IsMouseOver do NavItemStyle
+                    // e o hover pararia de funcionar depois do primeiro clique no menu.
+                    items[index].ClearValue(Border.BackgroundProperty);
                     labels[index].SetResourceReference(TextBlock.ForegroundProperty, "TextSecondaryBrush");
                     labels[index].FontWeight = FontWeights.Medium;
+                    icons[index].SetResourceReference(TextBlock.ForegroundProperty, "TextSecondaryBrush");
+                }
+
+                // Barra indicadora da página ativa, com fade suave.
+                var targetOpacity = isSelected ? 1.0 : 0.0;
+                if (SystemParameters.ClientAreaAnimation)
+                {
+                    indicators[index].BeginAnimation(
+                        UIElement.OpacityProperty,
+                        new DoubleAnimation(targetOpacity, new Duration(TimeSpan.FromMilliseconds(180))));
+                }
+                else
+                {
+                    indicators[index].BeginAnimation(UIElement.OpacityProperty, null);
+                    indicators[index].Opacity = targetOpacity;
                 }
             }
         }

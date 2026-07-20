@@ -1,21 +1,99 @@
-MIT License
+NON-COMMERCIAL SOFTWARE LICENSE
+Version 1.0
 
 Copyright (c) 2026 Alefk1708
+All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. PERMISSION
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Subject to the terms and conditions of this License, permission is hereby granted, free of charge, to any person obtaining a copy of this software, its source code, assets, and associated documentation files (the “Software”), to use, study, copy, modify, and distribute the Software solely for Non-Commercial Purposes.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. NON-COMMERCIAL USE ONLY
+
+The Software, whether in its original or modified form, may not be used, reproduced, distributed, sublicensed, sold, rented, monetized, or otherwise exploited for any Commercial Purpose without prior express written authorization from the copyright holder.
+
+“Commercial Purpose” includes, but is not limited to:
+
+a. selling, licensing, renting, or charging for access to the Software or any modified or derivative version;
+
+b. including the Software in any paid product, service, subscription, package, platform, or application;
+
+c. using the Software to provide paid services, consulting, development, hosting, software-as-a-service, or other services for compensation;
+
+d. generating revenue through advertisements, sponsorships, subscriptions, commissions, affiliate links, donations connected to access or benefits, in-app purchases, or any other direct or indirect monetization;
+
+e. using the Software as part of the internal operations, products, or services of a for-profit business or commercial organization;
+
+f. using the Software or any part of it to create, promote, support, or improve a commercial product or service.
+
+Use by a nonprofit, educational, governmental, or charitable organization is not automatically considered Non-Commercial if the Software is used in connection with revenue-generating or commercially advantageous activities.
+
+Any Commercial Purpose requires a separate written commercial license granted by the copyright holder.
+
+3. REDISTRIBUTION AND MODIFICATIONS
+
+Redistribution of the Software or modified versions is permitted only for Non-Commercial Purposes and only if:
+
+a. this License and the original copyright notice are included in all copies or substantial portions of the Software;
+
+b. modified files clearly state that they have been changed;
+
+c. the Software and all derivative works remain subject to this License;
+
+d. no recipient is granted permission to use the Software for a Commercial Purpose;
+
+e. no additional terms are imposed that contradict or attempt to bypass this License.
+
+4. OWNERSHIP
+
+The Software is licensed, not sold.
+
+All ownership rights, copyrights, and other intellectual property rights in the original Software remain exclusively with Alefk1708.
+
+This License does not grant permission to use the copyright holder’s names, logos, trademarks, trade names, project names, or branding for advertising, endorsement, or promotional purposes without prior written authorization.
+
+5. THIRD-PARTY COMPONENTS
+
+This License applies only to portions of the Software for which Alefk1708 owns the applicable rights.
+
+Third-party libraries, engines, assets, fonts, plugins, source code, and other components included with or used by the Software remain subject to their respective licenses and copyright notices.
+
+6. TERMINATION
+
+Any violation of this License automatically terminates all permissions granted under it.
+
+Upon termination, the violating party must immediately stop using, modifying, copying, distributing, or otherwise accessing the Software and must delete all copies under their possession or control.
+
+Termination does not prevent the copyright holder from pursuing any available legal remedies.
+
+7. NO WARRANTY
+
+THE SOFTWARE IS PROVIDED “AS IS” AND “AS AVAILABLE”, WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, ACCURACY, RELIABILITY, SECURITY, AVAILABILITY, TITLE, AND NON-INFRINGEMENT.
+
+THE COPYRIGHT HOLDER DOES NOT WARRANT THAT THE SOFTWARE WILL OPERATE WITHOUT ERRORS, INTERRUPTIONS, SECURITY VULNERABILITIES, DATA LOSS, COMPATIBILITY PROBLEMS, OR OTHER FAILURES.
+
+USE OF THE SOFTWARE IS ENTIRELY AT THE USER’S OWN RISK.
+
+8. LIMITATION OF LIABILITY
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE COPYRIGHT HOLDER, AUTHORS, CONTRIBUTORS, OR DISTRIBUTORS BE LIABLE FOR ANY CLAIM, LOSS, DAMAGE, COST, EXPENSE, OR OTHER LIABILITY ARISING FROM OR RELATED TO THE SOFTWARE OR ITS USE, INABILITY TO USE, MODIFICATION, DISTRIBUTION, INSTALLATION, EXECUTION, OR RELIANCE UPON IT.
+
+THIS EXCLUSION INCLUDES, WITHOUT LIMITATION, DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, PUNITIVE, OR CONSEQUENTIAL DAMAGES; LOSS OF PROFITS, REVENUE, BUSINESS, OPPORTUNITIES, REPUTATION, DATA, FILES, OR EQUIPMENT; SERVICE INTERRUPTIONS; SECURITY INCIDENTS; DEVICE DAMAGE; AND CLAIMS MADE BY THIRD PARTIES.
+
+THE USER ASSUMES FULL RESPONSIBILITY FOR TESTING THE SOFTWARE, MAINTAINING BACKUPS, PROTECTING THEIR SYSTEMS AND DATA, VERIFYING LEGAL OR REGULATORY COMPLIANCE, AND DETERMINING WHETHER THE SOFTWARE IS SUITABLE FOR THEIR PURPOSES.
+
+Nothing in this License excludes or limits liability where such exclusion or limitation is prohibited by applicable law.
+
+9. NO SUPPORT OR MAINTENANCE OBLIGATION
+
+The copyright holder has no obligation to provide support, maintenance, corrections, updates, security patches, documentation, compatibility assistance, or continued availability of the Software.
+
+10. SEVERABILITY
+
+If any provision of this License is found to be invalid, illegal, or unenforceable, that provision shall be enforced to the maximum extent permitted by law, and the remaining provisions shall remain in full force and effect.
+
+11. ACCEPTANCE
+
+By downloading, copying, installing, accessing, modifying, distributing, or using the Software, the user acknowledges that they have read, understood, and agreed to comply with this License.
+
+For commercial licensing authorization, the interested party must obtain prior express written permission directly from the copyright holder.
